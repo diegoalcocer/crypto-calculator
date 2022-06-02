@@ -11,21 +11,18 @@ currencies = [
         'Bitcoin (BTC)',
         'Ethereum (ETH)',
         'Tether (USDT)',
-        'USD Coin (USDC)',
         'Binance Coin (BNB)',
         'Ripple (XRP)',
-        'Binance USD (BUSD)',
         'Cardano (ADA)',
         'Solana (SOL)',
         'Dogecoine (DOGE)',
-        'Polkadot (DOT)',
-        'Wrapped Bitcoin (WBTC)',
+        'Polkadot (DOT)'
         ]
 
 class CryptoCalculator(cmd.Cmd):
     """Crypto Calculator"""
 
-    intro = "Group 3's CryptoCalculator App"
+    intro = "Crypto-Calculator App"
     use_rawinput = True
     prompt = 'CryptoCalculator > '
 
@@ -60,8 +57,8 @@ class CryptoCalculator(cmd.Cmd):
         input_quantity = self.get_input_quantity()
         input_currency = self.parse_currency(self.get_input_currency()['input_currency'])
         output_currency = self.parse_currency(self.get_output_currency()['output_currency'])
-        output_quantity = input_quantity * crypto_api.get_current_price(input_currency)
-        print(f'{output_quantity} {output_currency}')
+        output_quantity = input_quantity * crypto_api.get_current_price(input_currency)/crypto_api.get_current_price(output_currency)
+        print(f'{input_quantity} {input_currency} = {output_quantity:.8f} {output_currency}')
 
     def do_exit(self, line):
         """Exits the CryptoCalculator"""
