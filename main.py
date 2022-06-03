@@ -149,7 +149,10 @@ class CryptoCalculator(cmd.Cmd):
         else:
             print('Invalid credentials')
             return False
-
+    
+    def do_cumulative(self,line):
+        report = wallet.Report()
+        report.generate_cumsum()
 
     def do_exit(self, line):
         """Exits the CryptoCalculator"""
