@@ -48,6 +48,9 @@ EOF  add_funds  balance  buy  exit  help  quit  sell
 ```sh
 jupyter lab
 Open Browser > http://localhost:8888/lab/tree/crypto_price_charts.ipynb
+ - or -
+voila crypto_price_charts.ipynb
+Open Browser > http://localhost:8866/
 ```
 
 ---
