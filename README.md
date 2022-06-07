@@ -1,7 +1,6 @@
 # Crypto Calculator
 
 ---
-
 ## Summary
 
 The Crypto-Calculator is a command-line interface (CLI) utility which allows you to perform the following functions:
@@ -16,8 +15,11 @@ The Crypto-Calculator is a command-line interface (CLI) utility which allows you
 
 Additionally, there is a supplemental Jupyter Notebook which visually demonstrates historical changes in Bitcoin (BTC), Ethereum (ETH), and Ripple (XRP).  Historical data is collected from [Bitstamp](https://www.bitstamp.net) and analyzed within Pandas DataFrames.
 
----
+User and Wallet data is stored locally within an SQLite3 database.  User passwords are bcrypt salted and hashed.
 
+Cryptocurrency exchange rates are performed in real-time via [Alternative.me's Crypto API](https://alternative.me/crypto/api/)
+
+---
 ## Installation and Usage
 
 ```sh
@@ -41,7 +43,6 @@ EOF  add_funds  balance  buy  exit  help  quit  sell
 ```
 
 ---
-
 ## Jupyter Notebook Usage
 
 ```sh
@@ -50,13 +51,13 @@ Open Browser > http://localhost:8888/lab/tree/crypto_price_charts.ipynb
 ```
 
 ---
-
 ## Contributors
 
 1. [Antiwan](https://github.com/admaxwell)
 2. [Diego](https://github.com/diegoalcocer)
 3. [Travis](https://github.com/travispeska)
 
+--
 ## License
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
