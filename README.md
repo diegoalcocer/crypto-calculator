@@ -10,12 +10,14 @@
 
 ---
 
-## Installation
+## Installation and Usage
 
 ```sh
 git clone git@github.com:diegoalcocer/crypto-calculator.git
 cd crypto-calculator/
 pip install -r requirements.txt
+
+python3 main.py
 ```
 
 ---
