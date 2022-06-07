@@ -33,7 +33,6 @@ def auth(username, password):
         hashed_password = res[0][0].encode('utf-8')
         return bcrypt.checkpw(password, hashed_password)
 
-
 def store_price(currency_name, currency_value):
     return True
 
@@ -49,19 +48,22 @@ def get_user_id(username):
 def get_wallets(username):
     engine = init()    
     user_id = get_user_id(username)
-    
     wallets = engine.execute(f"""
-    select * from wallet WHERE userid = {user_id}
+    SELECT * 
+    FROM wallets 
+    WHERE userid = {user_id}
     """).fetchall()
-
     return wallets
     
 def get_wallets_by_currency(user_id, currency):
     engine = init()    
     wallets = engine.execute(f"""
-    select * from wallet WHERE userid = {user_id} and currency = '{currency}'
+    SELECT * 
+    FROM wallets 
+    WHERE 
+        userid = {user_id} 
+        AND currency = '{currency}'
     """).fetchall()
-
     return wallets
 
 def update_wallet(currency, balance, username):
@@ -70,7 +72,7 @@ def update_wallet(currency, balance, username):
     if len(get_wallets_by_currency(user_id,currency))<1:
         try:
             engine.execute(f"""
-                INSERT INTO wallet (
+                INSERT INTO wallets (
                     userid,
                     currency,
                     balance,
