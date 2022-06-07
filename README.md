@@ -57,7 +57,7 @@ Open Browser > http://localhost:8888/lab/tree/crypto_price_charts.ipynb
 2. [Diego](https://github.com/diegoalcocer)
 3. [Travis](https://github.com/travispeska)
 
---
+---
 ## License
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
