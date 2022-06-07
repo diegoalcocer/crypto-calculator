@@ -1,10 +1,10 @@
-from database_helper import sql_helper
-from api_helper import crypto_api
 import questionary
 import re
 import pandas as pd
 from pathlib import Path
 from datetime import datetime as dt
+from utils import sql_helper
+from utils import crypto_api
 
 class Wallet:
     options = ['Balance','Buy','Sell']
@@ -23,7 +23,7 @@ class Wallet:
     def get_input_quantity(self):
         input_quantity = questionary.text('What is your input amount?').ask()
         return float(input_quantity)
-    
+
     def parse_currency(self, s):
         m = re.search('\(([A-Z]{3,4})\)$', s)
         return m.group(1)
@@ -37,7 +37,7 @@ class Wallet:
             }]
         return questionary.prompt(question)
 
-        
+
 
     def __init__(self, user) :
         if user.is_authenticated:
@@ -53,7 +53,7 @@ class Wallet:
         print('')
         print('-----------------------------------------------')
         print('')
-    
+
     def buy_crypto(self):
         '''Shows user the available currencies and their price. Buy a selected amount of the selected cryptocurrency'''
         print('Buying Crypto...')
