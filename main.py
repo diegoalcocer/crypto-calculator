@@ -6,6 +6,7 @@ import bcrypt
 import questionary
 from utils import crypto_api, sql_helper
 from utils.user_account import *
+from utils.report import *
 
 currencies = [
         'US Dollar (USD)',
@@ -117,7 +118,8 @@ class CryptoCalculator(cmd.Cmd):
             return False
 
     def do_cumulative(self,line):
-        report = wallet.Report()
+        """Create a Report on the daily Cumulative Returns"""
+        report = Report()
         report.generate_cumsum()
 
     def do_exit(self, line):
