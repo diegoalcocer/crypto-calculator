@@ -4,7 +4,8 @@ import re
 import cmd
 import bcrypt
 import questionary
-from utils import crypto_api, sql_helper, user_auth, wallet
+from utils import crypto_api, sql_helper
+from utils.user_account import *
 
 currencies = [
         'US Dollar (USD)',
@@ -20,12 +21,11 @@ currencies = [
         ]
 
 class CryptoCalculator(cmd.Cmd):
-    """Crypto Calculator"""
+    """Crypto-Calculator"""
 
     intro = "Crypto-Calculator App"
     use_rawinput = True
     prompt = 'CryptoCalculator > '
-    user = user_auth.User('_guest_',False)
 
     def get_input_quantity(self):
         input_quantity = questionary.text('What is your input amount?').ask()
@@ -89,42 +89,10 @@ class CryptoCalculator(cmd.Cmd):
         else:
             print('Unable to create user')
 
-    def do_wallet(self, line):
-        if  not self.user.is_authenticated:
-            username = questionary.text('Username:').ask()
-            password = questionary.password('Password:').ask().encode('utf-8')
-            self.authenticate_user(username, password)
-
-        if self.user.is_authenticated:
-            user_wallet = wallet.Wallet(self.user)
-            if len(user_wallet.wallets)<1:
-                print("You Don't have a wallet yet. You can buy Bitcoin, Ethereum, and more with trust")
-                question = [{'type': 'select','name': 'create_wallet','message': 'Would you like to purchase Crypto?','choices': ['Yes','No']}]
-                create_wallet = questionary.prompt(question)['create_wallet']
-                if create_wallet == 'Yes':
-                    wallet_option = 'Buy'
-                    print(f"You picked: {wallet_option}")
-            else:
-                wallet_option = self.wallet_options(user_wallet.options)['wallet_option']
-                print(f"You picked: {wallet_option}")
-            user_wallet.actions(wallet_option)
-
-    def wallet_options(self, options):
-        question = [{
-                'type': 'select',
-                'name': 'wallet_option',
-                'message': 'Please select one of these options',
-                'choices': options,
-            }]
-        result = questionary.prompt(question)
-
-        return result
-
     def do_login(self, line):
-        """Login To Your Wallet"""
+        """Login To Your User Account"""
         if len(line.split()) >= 3:
-            print('Please try again')
-            return
+            print('Unable to Authenticate')
         elif len(line.split()) == 2:
             username = line.split()[0]
             password = line.split()[1]
@@ -134,17 +102,18 @@ class CryptoCalculator(cmd.Cmd):
         elif len(line.split()) == 0:
             username = questionary.text('Username:').ask()
             password = questionary.password('Password:').ask().encode('utf-8')
-        self.authenticate_user(username, password)
+
+        if self.authenticate_user(username, password):
+            user_acct = UserAccount()
+            user_acct.cmdloop(f'Welcome To Your Account {username}')
+        else:
+            print('Invalid Credentials')
 
     def authenticate_user(self, username, password):
         authenticated = sql_helper.auth(username, password)
         if authenticated:
-            self.user.name = username
-            self.user.is_authenticated = True
-            print(f'Welcome {self.user.name}')
             return True
         else:
-            print('Invalid credentials')
             return False
 
     def do_cumulative(self,line):

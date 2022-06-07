@@ -15,7 +15,6 @@ def get_crypto_data() -> Coin:
     
     data = requests.get(base_url, params = payload)
     json = data.json()
-    #print(json)
     coin_list = []
     
     for coin in json:

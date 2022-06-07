@@ -26,5 +26,12 @@ INSERT INTO users (
   '\$2b\$10\$14K5uaRoGfv3rD9jI09cu.HWMjn6G3NoOhn5ZYEAsbzxQUIIBtV1O',
   DATETIME('now')
 );
-"
 
+CREATE TABLE wallets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userid INTEGER NOT NULL,
+  currency VARCHAR(64) NOT NULL,
+  balance REAL NOT NULL,
+  created DATETIME
+);
+"

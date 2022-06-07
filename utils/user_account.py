@@ -1,25 +1,34 @@
-import questionary
 import re
+import cmd
+import questionary
 import pandas as pd
 from pathlib import Path
-from datetime import datetime as dt
+from datetime import datetime
 from utils import sql_helper
 from utils import crypto_api
 
-class Wallet:
+currencies = [
+    'US Dollar (USD)',
+    'Bitcoin (BTC)',
+    'Ethereum (ETH)',
+    'Tether (USDT)',
+    'Binance Coin (BNB)',
+    'Ripple (XRP)',
+    'Cardano (ADA)',
+    'Solana (SOL)',
+    'Dogecoine (DOGE)',
+    'Polkadot (DOT)'
+    ]
+
+class UserAccount(cmd.Cmd):
+
+    use_rawinput = True
+    prompt = 'User Account > '
     options = ['Balance','Buy','Sell']
-    currencies = [
-        'US Dollar (USD)',
-        'Bitcoin (BTC)',
-        'Ethereum (ETH)',
-        'Tether (USDT)',
-        'Binance Coin (BNB)',
-        'Ripple (XRP)',
-        'Cardano (ADA)',
-        'Solana (SOL)',
-        'Dogecoine (DOGE)',
-        'Polkadot (DOT)'
-        ]
+
+    def username(self):
+        return(self.intro.split()[-1])
+
     def get_input_quantity(self):
         input_quantity = questionary.text('What is your input amount?').ask()
         return float(input_quantity)
@@ -33,30 +42,24 @@ class Wallet:
                 'type': 'select',
                 'name': 'input_currency',
                 'message': 'What is your input currency?',
-                'choices': self.currencies,
+                'choices': currencies,
             }]
         return questionary.prompt(question)
 
+    def do_exit(self, line):
+        """Exits the User's Wallet and Returns to Main Crypto-Calculator"""
+        return True
 
+    def do_quit(self, line):
+        """Exits the User's Wallet and Returns to Main Crypto-Calculator"""
+        return True
 
-    def __init__(self, user) :
-        if user.is_authenticated:
-            self.user_name = user.name
-            self.wallets = sql_helper.get_wallets(self.user_name)
+    def do_EOF(self, line):
+        """Exits the User's Wallet and Returns to Main Crypto-Calculator"""
+        return True
 
-    def check_balance(self):
-        print('-----------------------------------------------')
-        print('Balance')
-        print('-----------------------------------------------')
-        for wallet in self.wallets:
-            print(f'You have {wallet[3]} {wallet[2]}')
-        print('')
-        print('-----------------------------------------------')
-        print('')
-
-    def buy_crypto(self):
-        '''Shows user the available currencies and their price. Buy a selected amount of the selected cryptocurrency'''
-        print('Buying Crypto...')
+    def do_buy(self, line):
+        """Shows User The Available Currencies and Their Price. Buy the Selected Crypto."""
         input_quantity = self.get_input_quantity()
         input_currency = self.parse_currency(self.get_input_currency()['input_currency'])
         unit_value = crypto_api.get_current_price(input_currency)
@@ -69,14 +72,24 @@ class Wallet:
                 'message': f'Do you want to buy {input_quantity} {input_currency} for ${price}',
                 'choices': ['Yes','No'],
             }]
-        if questionary.prompt(question)['will_buy'] == 'Yes':
-            success = sql_helper.update_wallet(input_currency, input_quantity, self.user_name)
+        if questionary.prompt(question)['will_buy'].lower().startswith('y'):
+            success = sql_helper.update_wallet(input_currency, input_quantity, self.username())
 
-    def actions(self, option):
-        if option == 'Balance':
-            self.check_balance()
-        elif option == 'Buy':
-            self.buy_crypto()
+    def do_sell(self, line):
+        """Sell Crypto"""
+
+    def do_balance(self, line):
+        """Get Your Current Wallet Holdings"""
+        wallets = sql_helper.get_wallets(self.username())
+        if len(wallets) <= 0:
+            print('No Wallets!')
+        else:
+            print('-----------------------------------------------')
+            print('Wallet Balances')
+            print('-----------------------------------------------')
+            for wallet in wallets:
+                print(f' * {wallet[3]} {wallet[2]}')
+            print('\n-----------------------------------------------\n')
 
 class Report:
     def __init__(self) -> None:
@@ -95,14 +108,14 @@ class Report:
 
         start = questionary.text("What's the start date (YYYY-MM-dd)").ask()
         try:
-            dt.strptime(start,"%Y-%m-%d")
+            datetime.strptime(start,"%Y-%m-%d")
         except Exception as e:
             print('Error. Please input the date in the correct format')
             return (0,0)
 
         end = questionary.text("What's the end date (YYYY-MM-dd)").ask()
         try:
-            dt.strptime(end,"%Y-%m-%d")
+            datetime.strptime(end,"%Y-%m-%d")
         except:
             print('Error. Please input the date in the correct format')
             return (0,0)
