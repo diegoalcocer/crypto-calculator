@@ -4,10 +4,7 @@ import re
 import cmd
 import bcrypt
 import questionary
-from api_helper import crypto_api
-from database_helper import sql_helper
-from database_helper import user_auth
-from database_helper import wallet
+from utils import crypto_api, sql_helper, user_auth, wallet
 
 currencies = [
         'US Dollar (USD)',
@@ -93,12 +90,12 @@ class CryptoCalculator(cmd.Cmd):
             print('Unable to create user')
 
     def do_wallet(self, line):
-        if  not self.user.is_authenticated:            
+        if  not self.user.is_authenticated:
             username = questionary.text('Username:').ask()
             password = questionary.password('Password:').ask().encode('utf-8')
             self.authenticate_user(username, password)
 
-        if self.user.is_authenticated:            
+        if self.user.is_authenticated:
             user_wallet = wallet.Wallet(self.user)
             if len(user_wallet.wallets)<1:
                 print("You Don't have a wallet yet. You can buy Bitcoin, Ethereum, and more with trust")
@@ -110,7 +107,7 @@ class CryptoCalculator(cmd.Cmd):
             else:
                 wallet_option = self.wallet_options(user_wallet.options)['wallet_option']
                 print(f"You picked: {wallet_option}")
-            user_wallet.actions(wallet_option)            
+            user_wallet.actions(wallet_option)
 
     def wallet_options(self, options):
         question = [{
@@ -120,9 +117,9 @@ class CryptoCalculator(cmd.Cmd):
                 'choices': options,
             }]
         result = questionary.prompt(question)
-        
+
         return result
-        
+
     def do_login(self, line):
         """Login To Your Wallet"""
         if len(line.split()) >= 3:
@@ -149,7 +146,7 @@ class CryptoCalculator(cmd.Cmd):
         else:
             print('Invalid credentials')
             return False
-    
+
     def do_cumulative(self,line):
         report = wallet.Report()
         report.generate_cumsum()
