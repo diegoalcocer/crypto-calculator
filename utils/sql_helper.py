@@ -55,37 +55,68 @@ def get_wallets(username):
     """).fetchall()
     return wallets
     
-def get_wallets_by_currency(user_id, currency):
-    engine = init()    
-    wallets = engine.execute(f"""
+def get_wallet_by_currency(username, currency):
+    engine = init()
+    user_id = get_user_id(username)    
+    wallet = engine.execute(f"""
     SELECT * 
     FROM wallets 
     WHERE 
         userid = {user_id} 
         AND currency = '{currency}'
     """).fetchall()
-    return wallets
+    return wallet
 
-def update_wallet(currency, balance, username):
+def update_wallet(username, balance, currency):
     engine = init()
     user_id = get_user_id(username)
-    if len(get_wallets_by_currency(user_id,currency))<1:
-        try:
+    try:
+        if len(get_wallet_by_currency(username, currency)) < 1:
+                engine.execute(f"""
+                    INSERT INTO wallets (
+                        userid,
+                        currency,
+                        balance,
+                        created
+                    ) VALUES (
+                        {user_id},
+                        '{currency}',
+                        {balance},
+                        DATETIME('now')
+                    );"""
+                )
+                return True
+        else:
+            wallet = get_wallet_by_currency(username, currency)[0]
+            wallet_id = wallet[0]
+            current_wallet_balance = wallet[3]
+            new_wallet_balance = current_wallet_balance + balance
             engine.execute(f"""
-                INSERT INTO wallets (
-                    userid,
-                    currency,
-                    balance,
-                    created
-                ) VALUES (
-                    '{user_id}',
-                    '{currency}',
-                    {balance},
-                    DATETIME('now')
-                );"""
+                UPDATE wallets
+                SET balance = {new_wallet_balance}
+                WHERE id = {wallet_id}
+                ;""" 
             )
             return True
-        except Exception as e:
-            print(f'Oops! there was an exception :(  {e}')
-            return False
+    except Exception as e:
+        print(f'Oops! there was an exception :(  {e}')
+        return False
 
+
+def subtract_wallet(username, balance, currency):
+    engine = init()
+    try:
+        wallet = get_wallet_by_currency(username, currency)[0]
+        wallet_id = wallet[0]
+        current_wallet_balance = wallet[3]
+        new_wallet_balance = current_wallet_balance - balance
+        engine.execute(f"""
+            UPDATE wallets
+            SET balance = {new_wallet_balance}
+            WHERE id = {wallet_id}
+            ;""" 
+        )
+        return True
+    except Exception as e:
+        print(f'Oops! there was an exception :(  {e}')
+        return False
