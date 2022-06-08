@@ -50,9 +50,13 @@ class CryptoCalculator(cmd.Cmd):
             }]
         return questionary.prompt(question)
 
+    # Parse a string for the currency ticker
     def parse_currency(self, s):
         m = re.search('\(([A-Z]{3,4})\)$', s)
-        return m.group(1)
+        if m:
+            return m.group(1)
+        else:
+            return s
 
     def do_exchange(self, line):
         """Calculate Current Exchange Rate"""
@@ -62,9 +66,11 @@ class CryptoCalculator(cmd.Cmd):
         output_quantity = self.transform_currency(input_quantity, input_currency, output_currency)
         print(f'{input_quantity} {input_currency} = {output_quantity:.8f} {output_currency}')
 
+    # Perform the exchange rate between two currencies
     def transform_currency(self, input_quantity, input_currency, output_currency):
         return input_quantity * crypto_api.get_current_price(input_currency)/crypto_api.get_current_price(output_currency)
 
+    # Create a new user and store it to the database
     def do_create_new_user(self, line):
         """Create A New User"""
         if len(line.split()) >= 3:
@@ -104,12 +110,14 @@ class CryptoCalculator(cmd.Cmd):
             username = questionary.text('Username:').ask()
             password = questionary.password('Password:').ask().encode('utf-8')
 
+        # Drop to UserAccount shell if the login is successful, else return invalid
         if self.authenticate_user(username, password):
             user_acct = UserAccount()
             user_acct.cmdloop(f'Welcome To Your Account {username}')
         else:
             print('Invalid Credentials')
 
+    # Validate the user's credentials
     def authenticate_user(self, username, password):
         authenticated = sql_helper.auth(username, password)
         if authenticated:
