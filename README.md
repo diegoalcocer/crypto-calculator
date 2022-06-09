@@ -1,6 +1,7 @@
 # Crypto Calculator
 
 ---
+
 ## Summary
 
 The Crypto-Calculator is a command-line interface (CLI) utility which allows you to perform the following functions:
@@ -9,7 +10,7 @@ The Crypto-Calculator is a command-line interface (CLI) utility which allows you
 2. Create Crypto Cumulative Daily Return Reports 
 3. Control User Crypto Accounts and Wallets
    - Create New User Accounts
-   - Add Funs to USD Wallet
+   - Add Funds to USD Wallet
    - Buy and Sell Cryptocurrencies
    - Retrieve User Wallet Balances
 
@@ -42,7 +43,20 @@ Documented commands (type help <topic>):
 EOF  add_funds  balance  buy  exit  help  quit  sell
 ```
 
+### 📚 resources/
+
+This project uses the following resources required for analysis 
+
+* CSVs required for utils/report.py
+   * BTC.csv
+   * ETH.csv
+* CSVs required for crypto_price_charts.ipynb 
+   * Data collected from Bitstamp.net
+* Script **create_db.sh** which creates a fresh SQLite3 database
+   * Default credentials of **root**: root
+
 ---
+
 ## Jupyter Notebook Usage
 
 ```sh

@@ -7,6 +7,7 @@ class Report:
     def __init__(self) -> None:
         pass
 
+    # Obtains the currency from the user and returns it    
     def get_input_currency(self):
             question = [{
                     'type': 'select',
@@ -15,7 +16,8 @@ class Report:
                     'choices': ['BTC','ETH'],
                 }]
             return questionary.prompt(question)['input_currency']
-
+    
+    # Obtains the start and end date from the user and returns a tuple with these dates
     def get_date_range(self):
         start = questionary.text("What's the start date (YYYY-MM-dd)").ask()
         try:
@@ -33,18 +35,27 @@ class Report:
 
         return (start, end)
 
-
+    # Given a period of time (start date - end date) and a currency, generates the daily percentage change and calculates the cumulative sum for the given currency
     def cumulative_sum(self, start_date, end_date, currency):
+        '''Given a period of time (start date - end date) and a currency, generates the daily percentage change and calculates the cumulative sum for the given currency'''
+        # Read the csv file with historical data, setting the date column as index
         currency_df = pd.read_csv(Path(f'resources/{currency}.csv'), index_col='Date', parse_dates=True, infer_datetime_format=True)
-        currency_df.head()
+        # clean up data - drop nulls
+        # currency_df.head()
         currency_df.dropna(axis=1)
-        currency_df['Close'].describe()
+        # currency_df['Close'].describe()
+        
+        # Obtain the data for column Close for the specified period of time
         subset = currency_df['Close'].loc[start_date:end_date]
         print(f'Cumulative Daily Sum Report')
+        # Calculate and print the 5 last records of the cum sum
         print(subset.pct_change().cumsum().tail(5))
 
     def generate_cumsum(self):
+        '''Generate the Daily Cumulative Sum Report for a given period of time and currency'''
         range = self.get_date_range()
-        if range[0]==0 and range[1] == 0:
+
+        # Verify that the user input (dates) was correct. If incorrect, range = (0,0)
+        if range[0] == 0 and range[1] == 0:
             return False
         self.cumulative_sum(range[0], range[1], self.get_input_currency())
