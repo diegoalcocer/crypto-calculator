@@ -28,20 +28,36 @@ git clone git@github.com:diegoalcocer/crypto-calculator.git
 cd crypto-calculator/
 pip install -r requirements.txt
 ```
+To start the application:
 
 ```sh
 python3 main.py
+```
+Type *help* to get a list of possible actions
 
+```sh
 CryptoCalculator > help
 Documented commands (type help <topic>):
 ========================================
 EOF  create_new_user  cumulative  exchange  exit  help  login  quit
+```
+* **create_new_user:** Allows you to create a new user in order to create a wallet, buy and sell crypto
+* **exchange:** Access the crypto-calculator that allows you to transform from one currency to another
+* **cumulative:** Generates a report of daily cumulative sum for a given period of time and currency
 
+Once you **login** with your user credentials, you can access your *wallet*. Type help to get a list of possible actions
+
+```sh
 User Account > help
 Documented commands (type help <topic>):
 ========================================
 EOF  add_funds  balance  buy  exit  help  quit  sell
 ```
+
+* **add_funds:** To be able to buy crypto, you need to have funds in your account. Use this command to add funds to your account
+* **balance:** Displays the balance of all your assets (funds and crypto)
+* **buy:** Allows you to buy crypto
+* **sell:** Allows you to sell crypto
 
 ### 📚 resources/
 
